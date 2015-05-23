@@ -54,7 +54,7 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     });
-    //mongoose.connect('mongodb://todosuser:abc@ds029317.mongolab.com:29317/todosdb');
+    mongoose.connect('mongodb://localhost:27017/winewhine');
   });
 }
 

@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-//var User = mongoose.model('users');
+var user = process.env.MONGO_USER;
+var pass = process.env.MONGO_PASS;
 
-mongoose.connect('mongodb://jakob:123@ds029317.mongolab.com:29317/todosdb');
+mongoose.connect('mongodb://'+user+':'+pass+'@ds029317.mongolab.com:29317/todosdb');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
