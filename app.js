@@ -54,10 +54,9 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     });
-    mongoose.connect('mongodb:ENV["MONGO_USER"]:ENV["MONGO_PASS"]@ds029317.mongolab.com:29317/todosdb');
+    //mongoose.connect('mongodb://todosuser:abc@ds029317.mongolab.com:29317/todosdb');
   });
 }
-
 
 
 // production error handler
