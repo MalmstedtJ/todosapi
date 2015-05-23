@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 //var User = mongoose.model('users');
 
-mongoose.connect('mongodb://ENV["MONGO_USER"]:ENV["MONGO_PASS"]@ds029317.mongolab.com:29317/todosdb');
+mongoose.connect('mongodb://jakob:123@ds029317.mongolab.com:29317/todosdb');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
