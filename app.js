@@ -10,8 +10,6 @@ var todos = require('./routes/todos');
 var mongoose = require('mongoose');
 var fs = require('fs');
 
-
-
 var app = express();
 
 // view engine setup

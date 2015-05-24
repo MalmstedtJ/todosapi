@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var todoSchema = new Schema({
-	description: String
+	description: String,
+	downRating: Number
 });
 
 mongoose.model('todos', todoSchema);
