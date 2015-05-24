@@ -54,9 +54,20 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     });
-    mongoose.connect('mongodb://localhost:27017/winewhine');
   });
+  console.log('Environment: Development')
+  mongoose.connect('mongodb://localhost:27017/winewhine');
 }
+
+
+if(process.env.MONGO_ENV === 'PROD')
+{
+  console.log('Environment: Production')
+  var user = process.env.MONGO_USER;
+  var pass = process.env.MONGO_PASS;
+  mongoose.connect('mongodb://'+user+':'+pass+'@ds029317.mongolab.com:29317/todosdb');
+}
+
 
 
 // production error handler
