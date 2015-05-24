@@ -44,10 +44,16 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
+if(process.env.MONGO_ENV === 'PROD')
+{
+  console.log('Environment: Production')
+  var user = process.env.MONGO_USER;
+  var pass = process.env.MONGO_PASS;
+  mongoose.connect('mongodb://'+user+':'+pass+'@ds029317.mongolab.com:29317/todosdb');
+}
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+else if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -59,14 +65,6 @@ if (app.get('env') === 'development') {
   mongoose.connect('mongodb://localhost:27017/winewhine');
 }
 
-
-if(process.env.MONGO_ENV === 'PROD')
-{
-  console.log('Environment: Production')
-  var user = process.env.MONGO_USER;
-  var pass = process.env.MONGO_PASS;
-  mongoose.connect('mongodb://'+user+':'+pass+'@ds029317.mongolab.com:29317/todosdb');
-}
 
 
 
