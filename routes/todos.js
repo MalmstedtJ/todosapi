@@ -53,4 +53,18 @@ router.delete('/:id', function(req, res){
 	});
 });
 
+//Increase the downRate of a specified todo
+router.put('/downrate/:id', function(req, res) {
+	var id = req.params.id;
+	var query = ToDo.where({_id: id});
+	query.findOne(function (err, todo) {
+		if(todo) {
+			todo.downRating++;
+			todo.save();
+			res.sendStatus(200);
+		}
+		else{res.send(err)}
+	});
+});
+
 module.exports = router;
