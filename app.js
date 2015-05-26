@@ -53,9 +53,8 @@ app.use(function(req, res, next) {
 if(process.env.MONGO_ENV === 'PROD')
 {
   console.log('Environment: Production')
-  var user = process.env.MONGO_USER;
-  var pass = process.env.MONGO_PASS;
-  mongoose.connect('mongodb://'+user+':'+pass+'@ds029317.mongolab.com:29317/todosdb');
+  
+  mongoose.connect(process.env.MONGO_CONN_STRING);
 }
 // development error handler
 // will print stacktrace
@@ -70,9 +69,6 @@ else if (app.get('env') === 'development') {
   console.log('Environment: Development')
   mongoose.connect('mongodb://localhost:27017/winewhine');
 }
-
-
-
 
 // production error handler
 // no stacktraces leaked to user
