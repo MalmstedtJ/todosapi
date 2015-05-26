@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var todos = require('../models/todos');
+var todos = require('../models/todoRates');
 var ToDo = mongoose.model('todos');
+var downRate = mongoose.model('todoRates')
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -13,6 +15,13 @@ var ToDo = mongoose.model('todos');
 router.get('/', function(req, res) {
   mongoose.model('todos').find(function(err, todos){
     res.send(todos);
+  });
+});
+
+//Get all todos
+router.get('/downrates', function(req, res) {
+  mongoose.model('todoRates').find(function(err, rates){
+    res.send(rates);
   });
 });
 
@@ -55,9 +64,30 @@ router.delete('/:id', function(req, res){
 
 //Increase the downRate of a specified todo
 router.put('/downrate/:id', function(req, res) {
+	var ip = req.headers['x-forwarded-for'] || 
+     req.connection.remoteAddress || 
+     req.socket.remoteAddress ||
+     req.connection.socket.remoteAddress;
+    console.log("address: "+ip);
 	var id = req.params.id;
-	var query = ToDo.where({_id: id});
-	query.findOne(function (err, todo) {
+	var query1 = downRate.where({todoID: id});
+	query1.findOne(function(err, todoRates) {
+		if(todoRates){
+			if(todoRates.downRaters.indexOf(ip)){
+				res.sendStatus(304);
+			}
+			else{
+				todoRates.downRaters.push(ip)
+			}
+		}
+		else
+		{
+			var newRate = new downRate({todoID: id, downRaters: [ip]});
+			newRate.save();
+		}
+	});
+	var query2 = ToDo.where({_id: id});
+	query2.findOne(function (err, todo) {
 		if(todo) {
 			todo.downRating++;
 			todo.save();

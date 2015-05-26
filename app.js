@@ -53,7 +53,6 @@ app.use(function(req, res, next) {
 if(process.env.MONGO_ENV === 'PROD')
 {
   console.log('Environment: Production')
-  
   mongoose.connect(process.env.MONGO_CONN_STRING);
 }
 // development error handler
