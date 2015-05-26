@@ -68,44 +68,42 @@ router.put('/downrate/:id', function(req, res) {
      req.connection.remoteAddress || 
      req.socket.remoteAddress ||
      req.connection.socket.remoteAddress;
-    console.log("address: "+ip);
 	var id = req.params.id;
 	var query1 = downRate.where({todoID: id});
-	var change = true;
+	var status = 500;
 	query1.findOne(function(err, todoRates) {
+		//if there is an existing downrating document for this todo
 		if(todoRates){
-			console.log("todo found!")
+			//if this user has downrated this todo before
 			if(todoRates.downRaters.indexOf(ip) > -1){
-				change = false;
-				return;
+				status = 304;
 			}
+			//the document exist but the user has not downrated yet
 			else{
-				todoRates.downRaters.push(ip)
+				todoRates.downRaters.push(ip);
+				todoRates.save();
 			}
 		}
+		//there isn't a downrating document for this todo
 		else
 		{
 			var newRate = new downRate({todoID: id, downRaters: [ip]});
 			newRate.save();
 		}
-	});
-	if(!change)
-		{
-		res.sendStatus(403);
-	}
-	else {
+	}).exec(function(){
 		var query2 = ToDo.where({_id: id});
+
 		query2.findOne(function (err, todo) {
 		if(todo) {
 			todo.downRating++;
 			todo.save();
-			console.log("sending status 200");
-			res.sendStatus(200);
+			status = 200;
 		}
 		else{res.send(err)}
-	});
-	}
+		});
 
+		res.sendStatus(status);
+	});
 });
 
 module.exports = router;
