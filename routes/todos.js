@@ -71,10 +71,16 @@ router.put('/downrate/:id', function(req, res) {
     console.log("address: "+ip);
 	var id = req.params.id;
 	var query1 = downRate.where({todoID: id});
+	var resSent = false;
 	query1.findOne(function(err, todoRates) {
 		if(todoRates){
-			if(todoRates.downRaters.indexOf(ip)){
+			console.log("todo found!")
+			if(todoRates.downRaters.indexOf(ip) != null){
+				console.log("sending status 304");
 				res.sendStatus(304);
+				resSent = true;
+				return;
+				console.log("status 304 has been sent!")
 			}
 			else{
 				todoRates.downRaters.push(ip)
@@ -86,14 +92,20 @@ router.put('/downrate/:id', function(req, res) {
 			newRate.save();
 		}
 	});
+	if(resSent)
+	{
+		return;
+	}
 	var query2 = ToDo.where({_id: id});
 	query2.findOne(function (err, todo) {
 		if(todo) {
 			todo.downRating++;
 			todo.save();
+			console.log("sending status 200")
 			res.sendStatus(200);
 		}
-		else{res.send(err)}
+		else{console.log("sending error"); res.send(err)}
+
 	});
 });
 
