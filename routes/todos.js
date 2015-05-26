@@ -75,7 +75,7 @@ router.put('/downrate/:id', function(req, res) {
 	query1.findOne(function(err, todoRates) {
 		if(todoRates){
 			console.log("todo found!")
-			if(todoRates.downRaters.indexOf(ip) != null){
+			if(todoRates.downRaters.indexOf(ip) > -1){
 				change = false;
 				return;
 			}
@@ -103,7 +103,6 @@ router.put('/downrate/:id', function(req, res) {
 			res.sendStatus(200);
 		}
 		else{res.send(err)}
-
 	});
 	}
 
