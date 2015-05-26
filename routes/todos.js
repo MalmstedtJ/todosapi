@@ -92,21 +92,22 @@ router.put('/downrate/:id', function(req, res) {
 			newRate.save();
 		}
 	});
-	if(resSent)
+	
+	if(!resSent)
 	{
-		return;
-	}
 	var query2 = ToDo.where({_id: id});
 	query2.findOne(function (err, todo) {
 		if(todo) {
 			todo.downRating++;
 			todo.save();
-			console.log("sending status 200")
+			console.log("sending status 200");
 			res.sendStatus(200);
 		}
-		else{console.log("sending error"); res.send(err)}
+		else{res.send(err)}
 
 	});
+}
+
 });
 
 module.exports = router;
