@@ -5,6 +5,7 @@ var todos = require('../models/todos');
 var todos = require('../models/todoRates');
 var ToDo = mongoose.model('todos');
 var downRate = mongoose.model('todoRates')
+var async = require('async');
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -69,33 +70,40 @@ router.put('/downrate/:id', function(req, res) {
      req.socket.remoteAddress ||
      req.connection.socket.remoteAddress;
 	var id = req.params.id;
-	var query1 = downRate.where({todoID: id});
+	
 	var status = 200;
-	query1.findOne(function(err, todoRates) {
+	var query1 = downRate.where({todoID: id});
+	var call1 = function(callback){
+		query1.findOne(function(err, todoRates){
+
 		//if there is an existing downrating document for this todo
 		if(todoRates){
 			//if this user has downrated this todo before
 			if(todoRates.downRaters.indexOf(ip) > -1){
 				status = 304;
+				callback();
 			}
 			//the document exist but the user has not downrated yet
 			else{
 				todoRates.downRaters.push(ip);
 				todoRates.save();
+				callback();
 			}
 		}
 		//there isn't a downrating document for this todo
-		else
-		{
+		else{
 			var newRate = new downRate({todoID: id, downRaters: [ip]});
 			newRate.save();
+			callback();
 		}
-	}).exec(function(){
-		if(status != 304)
-		{
+	});
+	}
+
+var call2 = function(callback){
+	if(status != 304) {
 		var query2 = ToDo.where({_id: id});
 		query2.findOne(function (err, todo) {
-		if(todo) {
+			if(todo) {
 			todo.downRating++;
 			todo.save();
 			status = 200;
@@ -103,9 +111,18 @@ router.put('/downrate/:id', function(req, res) {
 		else{res.send(err)}
 		});
 	}
+	callback();	
+	};
 
-		res.sendStatus(status);
-	});
+var call3 = function(callback){
+	res.sendStatus(status);
+	callback();
+}
+
+async.series([call1, call2, call3]);
+
 });
+
+
 
 module.exports = router;
