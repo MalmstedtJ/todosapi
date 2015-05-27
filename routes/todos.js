@@ -70,7 +70,7 @@ router.put('/downrate/:id', function(req, res) {
      req.connection.socket.remoteAddress;
 	var id = req.params.id;
 	var query1 = downRate.where({todoID: id});
-	var status = 500;
+	var status = 200;
 	query1.findOne(function(err, todoRates) {
 		//if there is an existing downrating document for this todo
 		if(todoRates){
@@ -91,8 +91,9 @@ router.put('/downrate/:id', function(req, res) {
 			newRate.save();
 		}
 	}).exec(function(){
+		if(status != 304)
+		{
 		var query2 = ToDo.where({_id: id});
-
 		query2.findOne(function (err, todo) {
 		if(todo) {
 			todo.downRating++;
@@ -101,6 +102,7 @@ router.put('/downrate/:id', function(req, res) {
 		}
 		else{res.send(err)}
 		});
+	}
 
 		res.sendStatus(status);
 	});
