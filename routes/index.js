@@ -7,6 +7,5 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'todoAPI' });
 });
 
-
 module.exports = router;
  

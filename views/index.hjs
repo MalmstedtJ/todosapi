@@ -41,6 +41,11 @@
     			<td>PUT</td>
     			<td>Downrate the todo with the provided id</td>
     		<tr>
+    		<tr>
+    			<td>/todos/uprate/:id</td>
+    			<td>PUT</td>
+    			<td>Uprate the todo with the provided id</td>
+    		<tr>
     	</tbody>
     </table>
   </body>

@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var todos = require('../models/todos');
 var todos = require('../models/todoRates');
 var ToDo = mongoose.model('todos');
-var downRate = mongoose.model('todoRates')
+var rate = mongoose.model('todoRates')
 var async = require('async');
 
 // /* GET users listing. */
@@ -48,9 +48,9 @@ router.post('/', function(req, res){
 		newtodo.save();
 	}
 	else{
-		res.send(417); //expectation failed
+		res.sendStatus(417); //expectation failed
 	}
-	res.send(200);
+	res.sendStatus(200);
 });
 
 //Delete todo
@@ -60,44 +60,63 @@ router.delete('/:id', function(req, res){
 	query.findOne(function (err, todo) {
 		if(todo) {
 			todo.remove();
-			res.send(200); 
+			res.sendStatus(200); 
 		}
 		else{res.send(err)}
 	});
 });
 
 //Increase the downRate of a specified todo
+router.put('/uprate/:id', function(req, res) {
+	Rate(req, res, 'up');
+});
+
 router.put('/downrate/:id', function(req, res) {
-	var ip = req.headers['x-forwarded-for'] || 
-     req.connection.remoteAddress || 
-     req.socket.remoteAddress ||
-     req.connection.socket.remoteAddress;
-	var id = req.params.id;
-	
+	Rate(req, res, 'down');
+});
+
+function Rate(request, response, direction)
+{
+	var ip = request.headers['x-forwarded-for'] || 
+     request.connection.remoteAddress || 
+     request.socket.remoteAddress ||
+     request.connection.socket.remoteAddress;
+	var id = request.params.id;
+
 	var status = 200;
-	var query1 = downRate.where({todoID: id});
+	var query1 = rate.where({todoID: id});
 	var call1 = function(next){
 		query1.findOne(function(err, todoRates){
 
 		//if there is an existing downrating document for this todo
 		if(todoRates){
-			//if this user has downrated this todo before
-			if(todoRates.downRaters.indexOf(ip) > -1){
+			var query = todoRates.ratersDir.filter(function(r){ return r.ip === ip;});
+			var found = query[0];
+			var index = query.indexOf(found);
+			//user has already rated this todo before and in same direction
+			if(found !== null && found.direction === direction){
 				status = 304; //not modified
 				next();
 			}
-			//the document exist but the user has not downrated yet
+			//user has already rated this todo but different direction
+			else if(found !== null && found.direction !== direction){
+				todoRates.ratersDir.splice(index, 1);
+				todoRates.ratersDir.push({ip: ip, direction: direction});
+				todoRates.save();
+				next();
+			}
+			//the document exist but the user has not rated yet
 			else{
-				todoRates.downRaters.push(ip);
+				todoRates.ratersDir.push({ip: ip, direction: direction});
 				todoRates.save();
 				next();
 			}
 		}
 		//there isn't a downrating document for this todo
 		else{
-			var newRate = new downRate({todoID: id, downRaters: [ip]});
+			var newRate = new rate({todoID: id, downRaters: [{ip: ip, direction: direction}]});
 			newRate.save();
-			callback();
+			next();
 		}
 	});
 	}
@@ -107,24 +126,29 @@ var call2 = function(next){
 		var query2 = ToDo.where({_id: id});
 		query2.findOne(function (err, todo) {
 			if(todo) {
-			todo.downRating++;
+				if(direction === 'down')
+				{
+					todo.downRating--;
+				}
+				else if (direction ==='up')
+				{
+					todo.downRating++;
+				}
 			todo.save();
 			status = 200;
 		}
-		else{res.send(err)}
+		else{response.send(err)}
 		});
 	}
 	next();	
 	};
 
 var call3 = function(next){
-	res.sendStatus(status);
+	response.sendStatus(status);
 	next();
 }
 
 async.series([call1, call2, call3]);
-
-});
-
+}
 
 module.exports = router;
