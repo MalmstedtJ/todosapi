@@ -3,9 +3,45 @@
   <head>
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style type="text/css">
+    th{text-align: left;}
+    td{padding-right: 50px;}
+    </style>
   </head>
   <body>
     <h1>{{ title }}</h1>
     <p>Welcome to {{ title }}</p>
+    <h2>Documentation</h2>
+    <table id='documentation'>
+    	<thead>
+    		<tr>
+    			<th>URI</th>
+    			<th>HTTP-verb</th>
+    			<th>Description</th>
+    		</tr>
+    	</thead>
+    	<tbody>
+    		<tr>
+    			<td>/todos</td>
+    			<td>GET</td>
+    			<td>Get all todos</td>
+    		<tr>
+			<tr>
+    			<td>/todos</td>
+    			<td>POST</td>
+    			<td>Add a todo, ToDo JSON-object placed in body</td>
+    		<tr>
+			<tr>
+    			<td>/todos/:id</td>
+    			<td>DETELE</td>
+    			<td>Delete the todo with the provided id</td>
+    		<tr>
+			<tr>
+    			<td>/todos/downrate/:id</td>
+    			<td>PUT</td>
+    			<td>Downrate the todo with the provided id</td>
+    		<tr>
+    	</tbody>
+    </table>
   </body>
 </html>

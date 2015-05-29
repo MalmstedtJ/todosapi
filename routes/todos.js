@@ -42,10 +42,13 @@ router.get('/:id', function(req, res) {
 //Add todo
 router.post('/', function(req, res){
 	var desc = req.body.description;
-	if (desc != '')
+	if (desc != '' && desc.length <= 80)
 	{
 		var newtodo = new ToDo({description: desc, downRating: '0'});
 		newtodo.save();
+	}
+	else{
+		res.send(418)
 	}
 	res.send(200);
 });
@@ -73,7 +76,7 @@ router.put('/downrate/:id', function(req, res) {
 	
 	var status = 200;
 	var query1 = downRate.where({todoID: id});
-	var call1 = function(callback){
+	var call1 = function(next){
 		query1.findOne(function(err, todoRates){
 
 		//if there is an existing downrating document for this todo
@@ -81,13 +84,13 @@ router.put('/downrate/:id', function(req, res) {
 			//if this user has downrated this todo before
 			if(todoRates.downRaters.indexOf(ip) > -1){
 				status = 304;
-				callback();
+				next();
 			}
 			//the document exist but the user has not downrated yet
 			else{
 				todoRates.downRaters.push(ip);
 				todoRates.save();
-				callback();
+				next();
 			}
 		}
 		//there isn't a downrating document for this todo
@@ -99,7 +102,7 @@ router.put('/downrate/:id', function(req, res) {
 	});
 	}
 
-var call2 = function(callback){
+var call2 = function(next){
 	if(status != 304) {
 		var query2 = ToDo.where({_id: id});
 		query2.findOne(function (err, todo) {
@@ -111,18 +114,17 @@ var call2 = function(callback){
 		else{res.send(err)}
 		});
 	}
-	callback();	
+	next();	
 	};
 
-var call3 = function(callback){
+var call3 = function(next){
 	res.sendStatus(status);
-	callback();
+	next();
 }
 
 async.series([call1, call2, call3]);
 
 });
-
 
 
 module.exports = router;

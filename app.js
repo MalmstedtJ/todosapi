@@ -10,7 +10,6 @@ var todos = require('./routes/todos');
 var mongoose = require('mongoose');
 var fs = require('fs');
 var allowCrossDomain = function(req, res, next) {
-    console.log("Setting headers!");
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
