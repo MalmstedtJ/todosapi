@@ -48,7 +48,7 @@ router.post('/', function(req, res){
 		newtodo.save();
 	}
 	else{
-		res.send(418)
+		res.send(417); //expectation failed
 	}
 	res.send(200);
 });
@@ -60,7 +60,7 @@ router.delete('/:id', function(req, res){
 	query.findOne(function (err, todo) {
 		if(todo) {
 			todo.remove();
-			res.send(200);
+			res.send(200); 
 		}
 		else{res.send(err)}
 	});
@@ -83,7 +83,7 @@ router.put('/downrate/:id', function(req, res) {
 		if(todoRates){
 			//if this user has downrated this todo before
 			if(todoRates.downRaters.indexOf(ip) > -1){
-				status = 304;
+				status = 304; //not modified
 				next();
 			}
 			//the document exist but the user has not downrated yet
