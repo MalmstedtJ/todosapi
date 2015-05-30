@@ -44,7 +44,7 @@ router.post('/', function(req, res){
 	var desc = req.body.description;
 	if (desc != '' && desc.length <= 80)
 	{
-		var newtodo = new ToDo({description: desc, downRating: '0'});
+		var newtodo = new ToDo({description: desc, rating: '0'});
 		newtodo.save();
 	}
 	else{
@@ -88,19 +88,19 @@ function Rate(request, response, direction)
 	var query1 = rate.where({todoID: id});
 	var call1 = function(next){
 		query1.findOne(function(err, todoRates){
-
-		//if there is an existing downrating document for this todo
+		//if there is an existing rating document for this todo
 		if(todoRates){
 			var query = todoRates.ratersDir.filter(function(r){ return r.ip === ip;});
 			var found = query[0];
-			var index = query.indexOf(found);
+			console.log(query);
 			//user has already rated this todo before and in same direction
-			if(found !== null && found.direction === direction){
+			if(found !== undefined && found.direction === direction){
 				status = 304; //not modified
 				next();
 			}
 			//user has already rated this todo but different direction
-			else if(found !== null && found.direction !== direction){
+			else if(found !== undefined && found.direction !== direction){
+				var index = todoRates.ratersDir.indexOf(found);
 				todoRates.ratersDir.splice(index, 1);
 				todoRates.ratersDir.push({ip: ip, direction: direction});
 				todoRates.save();
@@ -113,9 +113,9 @@ function Rate(request, response, direction)
 				next();
 			}
 		}
-		//there isn't a downrating document for this todo
+		//there isn't a rating document for this todo
 		else{
-			var newRate = new rate({todoID: id, downRaters: [{ip: ip, direction: direction}]});
+			var newRate = new rate({todoID: id, ratersDir: [{ip: ip, direction: direction}]});
 			newRate.save();
 			next();
 		}
@@ -129,11 +129,11 @@ var call2 = function(next){
 			if(todo) {
 				if(direction === 'down')
 				{
-					todo.downRating--;
+					todo.rating--;
 				}
-				else if (direction ==='up')
+				else if (direction === 'up')
 				{
-					todo.downRating++;
+					todo.rating++;
 				}
 			todo.save();
 			status = 200;

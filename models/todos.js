@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var todoSchema = new Schema({
 	description: String,
-	downRating: Number,
+	rating: Number,
 });
 
 mongoose.model('todos', todoSchema);
