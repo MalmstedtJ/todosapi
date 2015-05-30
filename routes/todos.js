@@ -66,11 +66,12 @@ router.delete('/:id', function(req, res){
 	});
 });
 
-//Increase the downRate of a specified todo
+//Downrate the specified todo
 router.put('/uprate/:id', function(req, res) {
 	Rate(req, res, 'up');
 });
 
+//Uprate the specified todo
 router.put('/downrate/:id', function(req, res) {
 	Rate(req, res, 'down');
 });

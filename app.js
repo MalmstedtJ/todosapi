@@ -10,6 +10,14 @@ var todos = require('./routes/todos');
 var mongoose = require('mongoose');
 var fs = require('fs');
 var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://development.vsjgis-app.divshot.io/');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
+var allowCrossDomainLocal = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -58,6 +66,7 @@ if(process.env.MONGO_ENV === 'PROD')
 // development error handler
 // will print stacktrace
 else if (app.get('env') === 'development') {
+  app.use(allowCrossDomainLocal);
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
