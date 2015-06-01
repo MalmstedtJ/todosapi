@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var todos = require('../models/todos');
-var todoRates = require('../models/todoRates');
+//var todoRates = require('../models/todoRates');
 
 //Get all todos
 router.get('/', function(req, res) {
@@ -11,12 +11,12 @@ router.get('/', function(req, res) {
 	});
 });
 
-//Get all downrates
-router.get('/downrates', function(req, res) {
-	todoRates.GetAll(function(data){
-		res.send(data);
-	});
-});
+// //Get all downrates
+// router.get('/downrates', function(req, res) {
+// 	todoRates.GetAll(function(data){
+// 		res.send(data);
+// 	});
+// });
 
 //Get todo by id
 router.get('/:id', function(req, res) {
@@ -48,7 +48,9 @@ router.delete('/:id', function(req, res){
 router.put('/uprate/:id', function(req, res) {
 	var ip = GetIP(req);
 	var id = req.params.id;
-	todoRates.Rate(id, ip, 'up', function(success){
+	todos.Rate(id, ip, 'up', function(success){
+		console.log("in routes after callback function");
+		console.log("success? "+success);
 		if(success){res.sendStatus(200)}
 		else{res.sendStatus(304)}
 	});
@@ -58,7 +60,7 @@ router.put('/uprate/:id', function(req, res) {
 router.put('/downrate/:id', function(req, res) {
 	var ip = GetIP(req);
 	var id = req.params.id;
-	todoRates.Rate(id, ip, 'down', function(success){
+	todos.Rate(id, ip, 'down', function(success){
 		if(success){res.sendStatus(200)}
 		else{res.sendStatus(304)}
 	});

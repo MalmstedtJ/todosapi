@@ -3,6 +3,8 @@ var Schema = mongoose.Schema;
 
 var todoSchema = new Schema({
 	description: String,
+	upraters: Array,
+	downraters: Array,
 	rating: Number,
 });
 
@@ -13,25 +15,17 @@ var TODO = mongoose.model('todos');
 //Repository functions
 
 function GetAll(callback){
-	TODO.find(function(err, todos){
+	TODO.find()
+	.select('-upraters -downraters') //exclude IPs
+	.exec(function(err, todos){
     callback(todos);
   });
 }
 
-function GetById(id, callback){
-	var query = TODO.where({_id: id});
-	query.findOne(function (err, todo) {
-		if(todo) {
-			callback(todo);
-		}
-		else{callback(err)}
-	});
-}
-
 function Add(description, callback){
-  if (description != '' && description.length <= 80)
-	{
-		var newtodo = new TODO({description: description, rating: '0'});
+	var desc = description.trim();
+	if (desc != '' && desc.length <= 80) {
+		var newtodo = new TODO({description: desc, upraters: [], downraters: [], rating: 0});
 		newtodo.save();
 		callback(true);
 	}
@@ -51,27 +45,54 @@ function Delete(id, callback){
 	});
 }
 
-function ChangeTodoRating(id, direction, callback){
+function Rate(id, ip, direction, callback){
+	var todo = GetById(id, function(todo){
+		if(todo){
+			if(direction === 'up'){
+				var dindex = todo.downraters.indexOf(ip);
+				if(dindex > -1){
+					todo.downraters.splice(dindex, 1);
+				}
+				if(todo.upraters.indexOf(ip) < 0){
+					todo.upraters.push(ip);
+					todo.rating++;
+					todo.save();
+					callback(true);
+				}
+				else{callback(false)}
+			}
+			else if(direction === 'down'){
+				var uindex = todo.upraters.indexOf(ip);
+				if(uindex > -1){
+					todo.upraters.splice(uindex, 1);
+				}
+				if(todo.downraters.indexOf(ip) < 0){
+					todo.downraters.push(ip);
+					todo.rating--;
+					todo.save();
+					callback(true);
+				}
+				else{callback(false)}
+			}
+			else{callback(false)}
+		}
+		else{callback(false)}
+	});
+}
+
+//private functions
+
+function GetById(id, callback){
 	var query = TODO.where({_id: id});
 	query.findOne(function (err, todo) {
-	if(todo) {
-		if(direction === 'down'){
-			todo.rating--;
-			todo.save();
-			callback(true);
+		if(todo) {
+			callback(todo);
 		}
-		else if(direction === 'up'){
-			todo.rating++;
-			todo.save();
-			callback(true);
-		}
-	}
-	else {callback(false)}
+		else{callback(err)}
 	});
 }
 
 module.exports.GetAll = GetAll;
-module.exports.GetById = GetById;
 module.exports.Add = Add;
 module.exports.Delete = Delete;
-module.exports.ChangeTodoRating = ChangeTodoRating;
+module.exports.Rate = Rate;
