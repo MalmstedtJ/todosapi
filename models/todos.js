@@ -52,6 +52,7 @@ function Rate(id, ip, direction, callback){
 				var dindex = todo.downraters.indexOf(ip);
 				if(dindex > -1){
 					todo.downraters.splice(dindex, 1);
+					todo.rating++;
 				}
 				if(todo.upraters.indexOf(ip) < 0){
 					todo.upraters.push(ip);
@@ -65,6 +66,7 @@ function Rate(id, ip, direction, callback){
 				var uindex = todo.upraters.indexOf(ip);
 				if(uindex > -1){
 					todo.upraters.splice(uindex, 1);
+					todo.rating--;
 				}
 				if(todo.downraters.indexOf(ip) < 0){
 					todo.downraters.push(ip);
