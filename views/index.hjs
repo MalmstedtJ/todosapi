@@ -3,10 +3,6 @@
   <head>
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <style type="text/css">
-    th{text-align: left;}
-    td{padding-right: 50px;}
-    </style>
   </head>
   <body>
     <h1>{{ title }}</h1>
