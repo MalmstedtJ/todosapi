@@ -11,12 +11,11 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var allowCrossDomain = function(req, res, next) {
   console.log("setting headers");
-    //res.header('Access-Control-Allow-Origin', 'http://development.vsjgis-app.divshot.io');
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-
-    next();
+  //res.header('Access-Control-Allow-Origin', 'http://development.vsjgis-app.divshot.io');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
 }
 
 

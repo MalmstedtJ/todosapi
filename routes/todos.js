@@ -2,26 +2,10 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var todos = require('../models/todos');
-//var todoRates = require('../models/todoRates');
 
 //Get all todos
 router.get('/', function(req, res) {
-	todos.GetAll(function(data){
-		res.send(data);
-	});
-});
-
-// //Get all downrates
-// router.get('/downrates', function(req, res) {
-// 	todoRates.GetAll(function(data){
-// 		res.send(data);
-// 	});
-// });
-
-//Get todo by id
-router.get('/:id', function(req, res) {
-	var id = req.params.id;
-	todos.GetById(id, function(data){
+	todos.GetAll(-5, function(data){
 		res.send(data);
 	});
 });
@@ -29,17 +13,20 @@ router.get('/:id', function(req, res) {
 //Add todo
 router.post('/', function(req, res){
 	var desc = req.body.description;
-	todos.Add(desc, function(success){
-		var code = success ? 200 : 417;
-		res.sendStatus(code);
-	})
+	if(desc){
+		todos.Add(desc, function(success){
+			var code = success ? 200 : 417;
+			res.sendStatus(code);
+		});
+	}
+	else{res.sendStatus(417)}
 });
 
 //Delete todo
 router.delete('/:id', function(req, res){
 	var id = req.params.id;
 	todos.Delete(id, function(err, success){
-		if(success){res.send(200)}
+		if(success){res.sendStatus(200)}
 		else{res.send(err)}
 	});
 });
@@ -49,8 +36,6 @@ router.put('/uprate/:id', function(req, res) {
 	var ip = GetIP(req);
 	var id = req.params.id;
 	todos.Rate(id, ip, 'up', function(success){
-		console.log("in routes after callback function");
-		console.log("success? "+success);
 		if(success){res.sendStatus(200)}
 		else{res.sendStatus(304)}
 	});
@@ -63,7 +48,7 @@ router.put('/downrate/:id', function(req, res) {
 	todos.Rate(id, ip, 'down', function(success){
 		if(success){res.sendStatus(200)}
 		else{res.sendStatus(304)}
-	});
+	});	
 });
 
 function GetIP(request){

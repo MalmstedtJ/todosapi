@@ -14,8 +14,9 @@ var TODO = mongoose.model('todos');
 
 //Repository functions
 
-function GetAll(callback){
+function GetAll(lowLimit, callback){
 	TODO.find()
+	.where('rating').gt(lowLimit)
 	.select('-upraters -downraters') //exclude IPs
 	.exec(function(err, todos){
     callback(todos);
@@ -46,7 +47,7 @@ function Delete(id, callback){
 }
 
 function Rate(id, ip, direction, callback){
-	var todo = GetById(id, function(todo){
+	var todo = GetById(id, function(err, todo){
 		if(todo){
 			if(direction === 'up'){
 				var dindex = todo.downraters.indexOf(ip);
@@ -60,7 +61,7 @@ function Rate(id, ip, direction, callback){
 					todo.save();
 					callback(true);
 				}
-				else{callback(false)}
+				else{callback(false)} //ip already voted like this
 			}
 			else if(direction === 'down'){
 				var uindex = todo.upraters.indexOf(ip);
@@ -74,11 +75,11 @@ function Rate(id, ip, direction, callback){
 					todo.save();
 					callback(true);
 				}
-				else{callback(false)}
+				else{callback(false)} //ip already voted like this
 			}
-			else{callback(false)}
+			else{callback(false)} //invalid direction
 		}
-		else{callback(false)}
+		else{callback(false)} //no matching todo
 	});
 }
 
@@ -88,9 +89,9 @@ function GetById(id, callback){
 	var query = TODO.where({_id: id});
 	query.findOne(function (err, todo) {
 		if(todo) {
-			callback(todo);
+			callback(err, todo);
 		}
-		else{callback(err)}
+		else{callback(err, false)}
 	});
 }
 
