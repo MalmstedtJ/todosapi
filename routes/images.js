@@ -25,7 +25,7 @@ router.get('/daily', function(req, res, next) {
 		dailyImage = GetNewDaily();
 	}
 	console.log('using cached image');
-	res.send(dailyImage.url);
+	res.send(dailyImage);
 });
 
 router.post('/', function(req, res, next){
@@ -47,7 +47,7 @@ function GetNewDaily(){
 	images.GetRandom(function(data){
 		return dailyImage = {
 			date: today,
-			url: data
+			url: data.url
 		};
 	});
 }
