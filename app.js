@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var todos = require('./routes/todos');
+var images = require('./routes/images');
 var mongoose = require('mongoose');
 var fs = require('fs');
 var allowCrossDomain = function(req, res, next) {
@@ -43,6 +44,7 @@ fs.readdirSync(__dirname + '/models').forEach(function(filename){
 app.use('/', routes);
 app.use('/users', users);
 app.use('/todos', todos);
+app.use('/images', images);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
