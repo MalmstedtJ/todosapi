@@ -44,12 +44,13 @@ fs.readdirSync(__dirname + '/models').forEach(function(filename){
 
 app.use('/authenticate', auth);
 
+app.use('/', routes);
+
 //All routes after this will require token authentication
 app.use(function(req, res, next){
   tokenauth.Authenticate(req, res, next);
 });
 
-app.use('/', routes);
 app.use('/users', users);
 app.use('/todos', todos);
 app.use('/images', images);
