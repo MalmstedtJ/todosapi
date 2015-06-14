@@ -17,7 +17,7 @@ var allowCrossDomain = function(req, res, next) {
   //res.header('Access-Control-Allow-Origin', 'http://development.vsjgis-app.divshot.io');
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type x-access-token');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, x-access-token');
   next();
 }
 var app = express();
