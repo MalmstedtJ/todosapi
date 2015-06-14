@@ -4,11 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var auth = require('./routes/authenticate');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var todos = require('./routes/todos');
 var images = require('./routes/images');
 var mongoose = require('mongoose');
+var tokenauth = require('./models/tokenauth');
 var fs = require('fs');
 var allowCrossDomain = function(req, res, next) {
   console.log("setting headers");
@@ -18,13 +20,12 @@ var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   next();
 }
-
-
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
+app.set('secret', process.env.MONGO_SECRET || 'ThisIsADevSecret');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -41,6 +42,13 @@ fs.readdirSync(__dirname + '/models').forEach(function(filename){
   if(~filename.indexOf('.js')) require(__dirname + '/models/' + filename);
   });
 
+app.use('/authenticate', auth);
+
+//All routes after this will require token authentication
+app.use(function(req, res, next){
+  tokenauth.Authenticate(req, res, next);
+});
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/todos', todos);
@@ -52,6 +60,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // error handlers
 if(process.env.MONGO_ENV === 'PROD')

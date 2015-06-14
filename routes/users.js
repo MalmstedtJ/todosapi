@@ -4,16 +4,17 @@ var mongoose = require('mongoose');
 var users = require('../models/users');
 var User = mongoose.model('users');
 
-// /* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
-
 //Get all users
 router.get('/', function(req, res) {
-  mongoose.model('users').find(function(err, users){
-    res.send(users);
-  });
+	mongoose.model('users').find(function(err, users){
+		if(users){
+			res.send(users);
+		}
+		else{
+			res.sendStatus(403);
+		}
+		
+	});
 });
 
 //Get user
@@ -31,13 +32,18 @@ router.get('/:id', function(req, res) {
 
 //Add user
 router.post('/', function(req, res){
-	var namn = req.body.name;
-	if (namn != '')
+	var user = req.body.user;
+	var pass = req.body.pass;
+	var admin = req.body.admin;
+	if (user != '' && pass != '' && (admin === 'true' || admin === 'false'))
 	{
-		var bla = new User({name: namn});
-		bla.save();
+		var usr = new User({user: user, pass: pass, admin: admin});
+		usr.save();
+		res.send(200);
 	}
-	res.send(200);
+	else{
+		res.send(304);
+	}
 });
 
 //Delete user

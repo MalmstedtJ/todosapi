@@ -14,17 +14,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/daily', function(req, res, next) {
-	console.log(dailyImage);
-	if(!dailyImage){
-		console.log('initializing cached image');
+	if(!dailyImage || dailyImage.date < new Date().setHours(0,0,0,0)){
+		console.log('caching new random image');
 		dailyImage = GetNewDaily();
 	}
-	else if(dailyImage.date < new Date().setHours(0,0,0,0))
-	{
-		console.log('cached image out of date');
-		dailyImage = GetNewDaily();
-	}
-	console.log('using cached image');
+	console.log('sending cached image');
 	res.send(dailyImage);
 });
 
