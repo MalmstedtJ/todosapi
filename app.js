@@ -23,10 +23,12 @@ var allowCrossDomain = function(req, res, next) {
   next();
 }
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+server = require('http').createServer(app);
+io = require('socket.io').listen(server);
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
 
-io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']);
+io.set('transports', ['xhr-polling']);
 
 app.set('io', io);
 
@@ -42,7 +44,7 @@ io.on('connection', function(socket){
   // });
 });
 
-http.listen(3000, function(){
+server.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
