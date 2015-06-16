@@ -12,7 +12,7 @@ var images = require('./routes/images');
 var mongoose = require('mongoose');
 var tokenauth = require('./models/tokenauth');
 var fs = require('fs');
-
+var http = require("http");
 
 var allowCrossDomain = function(req, res, next) {
   console.log("setting headers");
@@ -23,31 +23,46 @@ var allowCrossDomain = function(req, res, next) {
   next();
 }
 var app = express();
-server = require('http').createServer(app);
-io = require('socket.io').listen(server);
+
+var server = http.createServer(app);
+server.listen(3000);
+var WebSocketServer = require('ws').Server
+  , wss = new WebSocketServer({server: server});
+
+  app.set('ws', wss);
+
+wss.on('connection', function(ws) {
+  console.log("Connected");
+    ws.on('message', function(message) {
+        console.log('received: %s', message);
+    });
+    ws.send("Welcome");
+});
+// server = require('http').createServer(app);
+// io = require('socket.io').listen(server);
 // var http = require('http').Server(app);
 // var io = require('socket.io')(http);
 
 //io.set('transports', ['xhr-polling']);
 //io({transports: ['xhr-polling']});
 
-app.set('io', io);
+//app.set('io', io);
 
-io.on('connection', function(socket){
-  socket.broadcast.emit('event', "A user connected");
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-  // socket.on('chat message', function(msg){
-  //   io.emit('chat message', msg);
-  //   console.log('message: ' + msg);
-  // });
-});
+// io.on('connection', function(socket){
+//   socket.broadcast.emit('event', "A user connected");
+//   console.log('a user connected');
+//   socket.on('disconnect', function(){
+//     console.log('user disconnected');
+//   });
+//   // socket.on('chat message', function(msg){
+//   //   io.emit('chat message', msg);
+//   //   console.log('message: ' + msg);
+//   // });
+// });
 
-server.listen(3000, function(){
-  console.log('listening on *:3000');
-});
+// server.listen(3000, function(){
+//   console.log('listening on *:3000');
+// });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
