@@ -25,7 +25,7 @@ var allowCrossDomain = function(req, res, next) {
 var app = express();
 
 var server = http.createServer(app);
-server.listen(3000);
+server.listen(80);
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({server: server});
 
