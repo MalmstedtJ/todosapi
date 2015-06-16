@@ -7,7 +7,6 @@ router.get('/', function(req, res, next) {
 	var io = req.app.get('io');
 	io.emit('event', 'Someone has reached todoAPI index page!')
 	res.render('index', { title: 'todoAPI' });
-	res.sendStatus(200);
 });
 module.exports = router;
  

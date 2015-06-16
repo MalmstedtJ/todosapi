@@ -26,8 +26,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-io.set("transports", ["xhr-polling"]);
-io.set("polling duration", 10); 
+io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']);
 
 app.set('io', io);
 
