@@ -24,10 +24,10 @@ var allowCrossDomain = function(req, res, next) {
 }
 var app = express();
 
-// var server = http.createServer(app);
-// server.listen(3000);
-// var WebSocketServer = require('ws').Server
-//   , wss = new WebSocketServer({server: server});
+var server = http.createServer(app);
+server.listen(3000);
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({server: server});
 
 
 
@@ -39,10 +39,8 @@ var app = express();
 //     ws.send("Welcome");
 // });
 
-var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: 8080 });
 
-   app.set('ws', wss);
+app.set('ws', wss);
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
