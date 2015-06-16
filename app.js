@@ -12,6 +12,8 @@ var images = require('./routes/images');
 var mongoose = require('mongoose');
 var tokenauth = require('./models/tokenauth');
 var fs = require('fs');
+
+
 var allowCrossDomain = function(req, res, next) {
   console.log("setting headers");
   //res.header('Access-Control-Allow-Origin', 'http://development.vsjgis-app.divshot.io');
@@ -21,6 +23,26 @@ var allowCrossDomain = function(req, res, next) {
   next();
 }
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+app.set('io', io);
+
+io.on('connection', function(socket){
+  socket.broadcast.emit('event', "A user connected");
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+  // socket.on('chat message', function(msg){
+  //   io.emit('chat message', msg);
+  //   console.log('message: ' + msg);
+  // });
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -69,6 +91,7 @@ if(process.env.MONGO_ENV === 'PROD')
   console.log('Environment: Production')
   mongoose.connect(process.env.MONGO_CONN_STRING);
 }
+
 // development error handler
 // will print stacktrace
 else if (app.get('env') === 'development') {

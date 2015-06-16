@@ -11,7 +11,6 @@ router.get('/', function(req,res){
 
 /* GET home page. */
 router.post('/', function(req, res){
-	console.log('kommer jag hit då?????');
 	console.log('user: ' +req.body.user);
 	User.findOne({
     user: req.body.user

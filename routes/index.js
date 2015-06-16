@@ -4,8 +4,10 @@ var mongoose = require('mongoose');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'todoAPI' });
+	var io = req.app.get('io');
+	io.emit('event', 'Someone has reached todoAPI index page!')
+	res.render('index', { title: 'todoAPI' });
+	res.sendStatus(200);
 });
-
 module.exports = router;
  
