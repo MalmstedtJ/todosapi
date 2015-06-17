@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+var config = require('../config/config');
 
 function Authenticate(req, res, next){
  // check header or url parameters or post parameters for token
@@ -7,7 +8,7 @@ function Authenticate(req, res, next){
   // decode token
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, req.app.get('secret'), function(err, decoded) {      
+    jwt.verify(token, config.secret, function(err, decoded) {      
       if (err) {
         res.status(403).send({ success: false, message: 'Failed to authenticate token.' });    
       } else {
