@@ -28,9 +28,10 @@ var wss = new WebSocketServer({server: server})
 console.log("websocket server created")
 
 wss.on("connection", function(ws) {
-  var id = setInterval(function() {
-    ws.send(JSON.stringify(new Date()), function() {  })
-  }, 1000)
+  ws.send(JSON.stringify("Welcome!"));
+  // var id = setInterval(function() {
+  //   ws.send(JSON.stringify(new Date()), function() {  })
+  // }, 1000)
 
   console.log("websocket connection open")
 
@@ -39,6 +40,8 @@ wss.on("connection", function(ws) {
     clearInterval(id)
   })
 })
+
+app.set('wss', wss);
 
 /**
  * Listen on provided port, on all network interfaces.

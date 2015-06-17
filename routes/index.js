@@ -5,8 +5,9 @@ var wstools = require('../models/WS_UTILS');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	var ws = req.app.get('wss');
 	//var io = req.app.get('io');
-	//wstools.broadcast(ws, "Someone is accessing the index page!");
+	wstools.broadcast(ws, JSON.stringify("Kuk irin lilla mun!"));
 	//io.emit('message', "Whoooohooooooo");
 	res.render('index', { title: 'todoAPI' });
 });
