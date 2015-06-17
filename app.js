@@ -11,6 +11,7 @@ var todos = require('./routes/todos');
 var images = require('./routes/images');
 var mongoose = require('mongoose');
 var tokenauth = require('./models/tokenauth');
+var config = require('./config/config');
 var fs = require('fs');
 
 var allowCrossDomain = function(req, res, next) {
@@ -26,7 +27,6 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
-app.set('secret', process.env.MONGO_SECRET || 'ThisIsADevSecret');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -67,8 +67,18 @@ app.use(function(req, res, next) {
 // error handlers
 if(process.env.MONGO_ENV === 'PROD')
 {
+  // production error handler
+  // no stacktraces leaked to user
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: {}
+    });
+  });
+
   console.log('Environment: Production')
-  mongoose.connect(process.env.MONGO_CONN_STRING);
+  mongoose.connect(config.prod_connString);
 }
 
 // development error handler
@@ -82,18 +92,10 @@ else if (app.get('env') === 'development') {
     });
   });
   console.log('Environment: Development')
-  mongoose.connect('mongodb://localhost:27017/winewhine');
+  mongoose.connect(config.local_connString);
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
+
 
 
 module.exports = app;

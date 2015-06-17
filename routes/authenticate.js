@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
+var config = require('../config/config');
 var users = require('../models/users');
 var User = mongoose.model('users');
 
@@ -29,8 +30,9 @@ router.post('/', function(req, res){
 
         // if user is found and password is right
         // create a token
-        console.log(process.env.MONGO_SECRET);
-        var token = jwt.sign(user, req.app.get('secret'), {
+        ;
+        console.log(config.secret);
+        var token = jwt.sign(user, config.secret, {
           expiresInMinutes: 1440 // expires in 24 hours
         });
 
