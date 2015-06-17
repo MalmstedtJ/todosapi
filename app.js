@@ -12,7 +12,6 @@ var images = require('./routes/images');
 var mongoose = require('mongoose');
 var tokenauth = require('./models/tokenauth');
 var fs = require('fs');
-var http = require("http");
 
 var allowCrossDomain = function(req, res, next) {
   console.log("setting headers");
@@ -24,32 +23,32 @@ var allowCrossDomain = function(req, res, next) {
 }
 var app = express();
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
 
-server.listen(80);
+// server.listen(80);
 
-//io.set('transports', ['xhr-polling']);
+// //io.set('transports', ['xhr-polling']);
 
-io.on('connection', function (socket) {
-  socket.broadcast.emit('message', "En klient har precis anslutit");
-    socket.on('disconnect', function(){
-  console.log('user disconnected');
-  });
-  socket.on('event', function (data) {
-    io.emit('message', data);
-    console.log(data);
-  });
-  socket.on('message', function(data){
-    io.emit('message', data);
-  })
-});
+// io.on('connection', function (socket) {
+//   socket.broadcast.emit('message', "En klient har precis anslutit");
+//     socket.on('disconnect', function(){
+//   console.log('user disconnected');
+//   });
+//   socket.on('event', function (data) {
+//     io.emit('message', data);
+//     console.log(data);
+//   });
+//   socket.on('message', function(data){
+//     io.emit('message', data);
+//   })
+// });
 
-io.on('disconnect', function(socket){
-  socket.broadcast.emit('event', "En client har precis kopplat från");
-})
+// io.on('disconnect', function(socket){
+//   socket.broadcast.emit('event', "En client har precis kopplat från");
+// })
 
- app.set('io', io);
+//  app.set('io', io);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
