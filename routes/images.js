@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var images = require('../models/images');
 
-var dailyImage = GetNewDaily();
+var dailyImage;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
