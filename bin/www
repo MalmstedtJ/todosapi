@@ -21,17 +21,16 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-// var wsServer = http.createServer(app);
-// wsServer.listen(3000);
+
+/**
+ * Create WebSockets server.
+ */
 
 var wss = new WebSocketServer({server: server})
 console.log("websocket server created")
 
 wss.on("connection", function(ws) {
   ws.send(JSON.stringify("Welcome!"));
-  // var id = setInterval(function() {
-  //   ws.send(JSON.stringify(new Date()), function() {  })
-  // }, 1000)
 
   console.log("websocket connection open")
 

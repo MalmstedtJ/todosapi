@@ -6,9 +6,8 @@ var wstools = require('../models/WS_UTILS');
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	var ws = req.app.get('wss');
-	//var io = req.app.get('io');
-	wstools.broadcast(ws, JSON.stringify("Kuk irin lilla mun!"));
-	//io.emit('message', "Whoooohooooooo");
+	wstools.broadcast(ws, JSON.stringify({type: 'event', message: 'Someone just accessed the index page of todoAPI!'}));
+
 	res.render('index', { title: 'todoAPI' });
 });
 module.exports = router;
