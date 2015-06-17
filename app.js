@@ -29,7 +29,7 @@ var io = require('socket.io')(server);
 
 server.listen(80);
 
-io.set('transports', ['xhr-polling']);
+//io.set('transports', ['xhr-polling']);
 
 io.on('connection', function (socket) {
   socket.broadcast.emit('message', "En klient har precis anslutit");
