@@ -24,56 +24,32 @@ var allowCrossDomain = function(req, res, next) {
 }
 var app = express();
 
-var server = http.createServer(app);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 server.listen(80);
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({server: server});
 
+io.set('transports', ['websocket']);
 
-
-// wss.on('connection', function(ws) {
-//   console.log("Connected");
-//     ws.on('message', function(message) {
-//         console.log('received: %s', message);
-//     });
-//     ws.send("Welcome");
-// });
-
-
-app.set('ws', wss);
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+io.on('connection', function (socket) {
+  socket.broadcast.emit('message', "En klient har precis anslutit");
+    socket.on('disconnect', function(){
+  console.log('user disconnected');
   });
-
-  ws.send('something');
+  socket.on('event', function (data) {
+    io.emit('message', data);
+    console.log(data);
+  });
+  socket.on('message', function(data){
+    io.emit('message', data);
+  })
 });
-// server = require('http').createServer(app);
-// io = require('socket.io').listen(server);
-// var http = require('http').Server(app);
-// var io = require('socket.io')(http);
 
-//io.set('transports', ['xhr-polling']);
-//io({transports: ['xhr-polling']});
+io.on('disconnect', function(socket){
+  socket.broadcast.emit('event', "En client har precis kopplat från");
+})
 
-//app.set('io', io);
-
-// io.on('connection', function(socket){
-//   socket.broadcast.emit('event', "A user connected");
-//   console.log('a user connected');
-//   socket.on('disconnect', function(){
-//     console.log('user disconnected');
-//   });
-//   // socket.on('chat message', function(msg){
-//   //   io.emit('chat message', msg);
-//   //   console.log('message: ' + msg);
-//   // });
-// });
-
-// server.listen(3000, function(){
-//   console.log('listening on *:3000');
-// });
+ app.set('io', io);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
