@@ -14,12 +14,18 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/daily', function(req, res, next) {
+	console.log(dailyImage);
 	if(!dailyImage || dailyImage.date < new Date().setHours(0,0,0,0)){
 		console.log('caching new random image');
-		dailyImage = GetNewDaily();
+		GetNewDaily(function(img){
+			dailyImage = img;
+			res.send(dailyImage);
+		});
 	}
-	console.log('sending cached image');
-	res.send(dailyImage);
+	else{
+		console.log('sending cached image');
+		res.send(dailyImage);
+	}
 });
 
 router.post('/', function(req, res, next){
@@ -36,13 +42,14 @@ router.post('/', function(req, res, next){
 	else{res.sendStatus(404)}
 });
 
-function GetNewDaily(){
+function GetNewDaily(callback){
 	var today = new Date().setHours(0,0,0,0);
 	images.GetRandom(function(data){
-		return dailyImage = {
+		var dailyImage = {
 			date: today,
 			url: data.url
 		};
+		callback(dailyImage);
 	});
 }
 
