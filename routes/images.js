@@ -5,14 +5,18 @@ var images = require('../models/images');
 
 var dailyImage;
 
-/* GET home page. */
+// GET all images, only admins
 router.get('/', function(req, res, next) {
-	images.GetAll(function(data){
-		console.log(data);
-		res.send(data);
-	});
+	if(req.decoded.admin){
+		images.GetAll(function(data){
+			res.send(data);
+			console.log("Admin user: '"+res.decoded.user+"' just fetched all images");
+		});
+	}
+	else{ res.sendStatus(550); }
 });
 
+//Get daily image
 router.get('/daily', function(req, res, next) {
 	console.log(dailyImage);
 	if(!dailyImage || dailyImage.date < new Date().setHours(0,0,0,0)){
@@ -28,18 +32,23 @@ router.get('/daily', function(req, res, next) {
 	}
 });
 
+//Add new image, only admins
 router.post('/', function(req, res, next){
-	var URL = req.body.url;
-	console.log(URL);
-	if(URL){
-		images.Add(URL, function(success){
-			if(success){
-				res.sendStatus(200)
-			}
-			else{res.sendStatus(404)}
-		});
+	if(req.decoded.admin){
+		var URL = req.body.url;
+		console.log(URL);
+		if(URL){
+			images.Add(URL, function(success){
+				if(success){
+					res.sendStatus(200)
+					console.log("Admin user: '"+res.decoded.user+"' just added image with url: '"+URL+"'");
+				}
+				else{res.sendStatus(404)}
+			});
+		}
+		else{res.sendStatus(404)}
 	}
-	else{res.sendStatus(404)}
+	else { res.sendStatus(550); }
 });
 
 function GetNewDaily(callback){

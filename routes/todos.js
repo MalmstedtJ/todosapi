@@ -3,32 +3,48 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var todos = require('../models/todos');
 
-//Get all todos
+//Get all todos, only admins
 router.get('/', function(req, res) {
-	todos.GetAll(-5, function(data){
-		res.send(data);
-	});
-});
-
-//Add todo
-router.post('/', function(req, res){
-	var desc = req.body.description;
-	if(desc){
-		todos.Add(desc, function(success){
-			var code = success ? 200 : 417;
-			res.sendStatus(code);
+	if(req.decoded.admin){
+		todos.GetAll(-5, function(data){
+			res.send(data);
+			console.log("Admin user: '"+res.decoded.user+"' just fetched all todos");
 		});
 	}
-	else{res.sendStatus(417)}
+	else { res.sendStatus(550); }
 });
 
-//Delete todo
+//Add todo, only admins
+router.post('/', function(req, res){
+	if(req.decoded.admin){
+		var desc = req.body.description;
+		if(desc){
+			todos.Add(desc, function(success){
+				var code = success ? 200 : 417;
+				if(success){
+					console.log("Admin user: '"+res.decoded.user+"' just added todo: '"+desc+"'");
+				}
+				res.sendStatus(code);
+			});
+		}
+		else{res.sendStatus(417)}
+	}
+	else{ res.sendStatus(550); }
+});
+
+//Delete todo, only admins
 router.delete('/:id', function(req, res){
-	var id = req.params.id;
-	todos.Delete(id, function(err, success){
-		if(success){res.sendStatus(200)}
-		else{res.send(err)}
-	});
+	if(req.decoded.admin){
+		var id = req.params.id;
+		todos.Delete(id, function(err, success){
+			if(success){
+				console.log("Admin user: '"+res.decoded.user+"' just deleted todo with id: '"+id+"'");
+				res.sendStatus(200)
+			}
+			else{res.send(err)}
+		});
+	}
+	else{ res.sendStatus(550); }
 });
 
 //Up rate the specified todo
