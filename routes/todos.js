@@ -5,36 +5,27 @@ var todos = require('../models/todos');
 
 //Get all todos, only admins
 router.get('/', function(req, res) {
-	if(req.decoded.admin){
-		todos.GetAll(-5, function(data){
-			res.send(data);
-			console.log("Admin user: '"+res.decoded.user+"' just fetched all todos");
-		});
-	}
-	else { res.sendStatus(550); }
+	todos.GetAll(-5, function(data){
+		res.send(data);
+		console.log("Admin user: '"+res.decoded.user+"' just fetched all todos");
+	});
 });
 
-//Add todo, only admins
+//Add todo
 router.post('/', function(req, res){
-	if(req.decoded.admin){
-		var desc = req.body.description;
-		if(desc){
-			todos.Add(desc, function(success){
-				var code = success ? 200 : 417;
-				if(success){
-					console.log("Admin user: '"+res.decoded.user+"' just added todo: '"+desc+"'");
-				}
-				res.sendStatus(code);
-			});
-		}
-		else{res.sendStatus(417)}
+	var desc = req.body.description;
+	if(desc){
+		todos.Add(desc, function(success){
+			var code = success ? 200 : 417;
+			res.sendStatus(code);
+		});
 	}
-	else{ res.sendStatus(550); }
+	else{res.sendStatus(417)}
 });
 
 //Delete todo, only admins
 router.delete('/:id', function(req, res){
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		var id = req.params.id;
 		todos.Delete(id, function(err, success){
 			if(success){

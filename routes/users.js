@@ -6,7 +6,7 @@ var User = mongoose.model('users');
 
 //Get all users, only admins
 router.get('/', function(req, res) {
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		mongoose.model('users').find(function(err, users){
 			if(users){
 				res.send(users);
@@ -20,7 +20,7 @@ router.get('/', function(req, res) {
 
 //Get user, only admins
 router.get('/:id', function(req, res) {
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		var id = req.params.id;
 		var User = mongoose.model('users');
 		var query = User.where({_id: id});
@@ -37,7 +37,7 @@ router.get('/:id', function(req, res) {
 
 //Add user, only admins
 router.post('/', function(req, res){
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		var user = req.body.user;
 		var pass = req.body.pass;
 		var admin = req.body.admin;
@@ -57,7 +57,7 @@ router.post('/', function(req, res){
 
 //Delete user, only admins
 router.delete('/{user_id}', function(req, res){
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		var id = user_id;
 		var query = User.where({_id: id});
 		query.findOne(function (err, user) {

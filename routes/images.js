@@ -7,7 +7,7 @@ var dailyImage;
 
 // GET all images, only admins
 router.get('/', function(req, res, next) {
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		images.GetAll(function(data){
 			res.send(data);
 			console.log("Admin user: '"+res.decoded.user+"' just fetched all images");
@@ -18,7 +18,6 @@ router.get('/', function(req, res, next) {
 
 //Get daily image
 router.get('/daily', function(req, res, next) {
-	console.log(dailyImage);
 	if(!dailyImage || dailyImage.date < new Date().setHours(0,0,0,0)){
 		console.log('caching new random image');
 		GetNewDaily(function(img){
@@ -34,7 +33,7 @@ router.get('/daily', function(req, res, next) {
 
 //Add new image, only admins
 router.post('/', function(req, res, next){
-	if(req.decoded.admin){
+	if(req.decoded && req.decoded.admin){
 		var URL = req.body.url;
 		console.log(URL);
 		if(URL){

@@ -25,23 +25,43 @@
 			<tr>
     			<td>/todos</td>
     			<td>POST</td>
-    			<td>Add a todo, ToDo JSON-object placed in body</td>
+    			<td>Add a todo, requires todo object</td>
     		<tr>
 			<tr>
     			<td>/todos/:id</td>
     			<td>DETELE</td>
-    			<td>Delete the todo with the provided id</td>
+    			<td>Delete the todo by id</td>
     		<tr>
 			<tr>
     			<td>/todos/downrate/:id</td>
     			<td>PUT</td>
-    			<td>Downrate the todo with the provided id</td>
+    			<td>Downrate the todo by id</td>
     		<tr>
     		<tr>
     			<td>/todos/uprate/:id</td>
     			<td>PUT</td>
-    			<td>Uprate the todo with the provided id</td>
+    			<td>Uprate the todo by id</td>
     		<tr>
+            <tr>
+                <td>/authenticate/td>
+                <td>POST</td>
+                <td>Retrieve Auth token, requires user object</td>
+            <tr>
+            <tr>
+                <td>/images</td>
+                <td>GET</td>
+                <td>Get all image objects</td>
+            <tr>
+            <tr>
+                <td>/images</td>
+                <td>POST</td>
+                <td>Add image, requires image object</td>
+            <tr>
+            <tr>
+                <td>/images/daily</td>
+                <td>GET</td>
+                <td>Get daily image object</td>
+            <tr>
     	</tbody>
     </table>
   </body>
