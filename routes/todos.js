@@ -7,7 +7,6 @@ var todos = require('../models/todos');
 router.get('/', function(req, res) {
 	todos.GetAll(-5, function(data){
 		res.send(data);
-		console.log("Admin user: '"+res.decoded.user+"' just fetched all todos");
 	});
 });
 
@@ -29,7 +28,7 @@ router.delete('/:id', function(req, res){
 		var id = req.params.id;
 		todos.Delete(id, function(err, success){
 			if(success){
-				console.log("Admin user: '"+res.decoded.user+"' just deleted todo with id: '"+id+"'");
+				console.log("Admin user: '"+req.decoded.user+"' just deleted todo with id: '"+id+"'");
 				res.sendStatus(200)
 			}
 			else{res.send(err)}

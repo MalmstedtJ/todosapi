@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 	if(req.decoded && req.decoded.admin){
 		images.GetAll(function(data){
 			res.send(data);
-			console.log("Admin user: '"+res.decoded.user+"' just fetched all images");
+			console.log("Admin user: '"+req.decoded.user+"' just fetched all images");
 		});
 	}
 	else{ res.sendStatus(550); }
@@ -40,7 +40,7 @@ router.post('/', function(req, res, next){
 			images.Add(URL, function(success){
 				if(success){
 					res.sendStatus(200)
-					console.log("Admin user: '"+res.decoded.user+"' just added image with url: '"+URL+"'");
+					console.log("Admin user: '"+req.decoded.user+"' just added image with url: '"+URL+"'");
 				}
 				else{res.sendStatus(404)}
 			});

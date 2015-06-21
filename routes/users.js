@@ -10,7 +10,7 @@ router.get('/', function(req, res) {
 		mongoose.model('users').find(function(err, users){
 			if(users){
 				res.send(users);
-				console.log("Admin user: '"+res.decoded.user+"' just fetched all users");
+				console.log("Admin user: '"+req.decoded.user+"' just fetched all users");
 			}
 			else{ res.sendStatus(403); }
 		});
@@ -27,7 +27,7 @@ router.get('/:id', function(req, res) {
 		query.findOne(function (err, user) {
 			if(user) { 
 				res.send(user);
-				console.log("Admin user: '"+res.decoded.user+"' just fetched user with id: '"+id+"'");
+				console.log("Admin user: '"+req.decoded.user+"' just fetched user with id: '"+id+"'");
 			}
 			else{ res.send(err); }
 		});
@@ -45,7 +45,7 @@ router.post('/', function(req, res){
 		{
 			var usr = new User({user: user, pass: pass, admin: admin});
 			usr.save();
-			console.log("Admin user: '"+res.decoded.user+"' just added user with id: '"+usr.id+"' and name: '"+usr.name+"'");
+			console.log("Admin user: '"+req.decoded.user+"' just added user with id: '"+usr.id+"' and name: '"+usr.name+"'");
 			res.sendStatus(200);
 		}
 		else{
@@ -63,7 +63,7 @@ router.delete('/{user_id}', function(req, res){
 		query.findOne(function (err, user) {
 			if(user) {
 				user.remove();
-				console.log("Admin user: '"+res.decoded.user+"' just deleted user with id: '"+id+"'");
+				console.log("Admin user: '"+req.decoded.user+"' just deleted user with id: '"+id+"'");
 				res.sendStatus(200);
 			}
 			else{res.send(err)}
