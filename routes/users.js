@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 			else{ res.sendStatus(403); }
 		});
 	}
-	else{ res.sendStatus(550); }
+	else{ res.sendStatus(403); }
 });
 
 //Get user, only admins
@@ -32,7 +32,7 @@ router.get('/:id', function(req, res) {
 			else{ res.send(err); }
 		});
 	}
-	else{ res.sendStatus(550); }
+	else{ res.sendStatus(403); }
 });
 
 //Add user, only admins
@@ -52,7 +52,7 @@ router.post('/', function(req, res){
 			res.sendStatus(304);
 		}
 	}
-	else{ res.sendStatus(550); }
+	else{ res.sendStatus(403); }
 });
 
 //Delete user, only admins
@@ -70,7 +70,7 @@ router.delete('/{user_id}', function(req, res){
 		});
 	}
 	else{
-		res.sendStatus(550);
+		res.sendStatus(403);
 	}
 });
 

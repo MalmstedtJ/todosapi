@@ -34,7 +34,7 @@ router.delete('/:id', function(req, res){
 			else{res.send(err)}
 		});
 	}
-	else{ res.sendStatus(550); }
+	else{ res.sendStatus(403); }
 });
 
 //Up rate the specified todo

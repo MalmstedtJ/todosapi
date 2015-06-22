@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 			console.log("Admin user: '"+req.decoded.user+"' just fetched all images");
 		});
 	}
-	else{ res.sendStatus(550); }
+	else{ res.sendStatus(403); }
 });
 
 //Get daily image
@@ -47,7 +47,7 @@ router.post('/', function(req, res, next){
 		}
 		else{res.sendStatus(404)}
 	}
-	else { res.sendStatus(550); }
+	else { res.sendStatus(403); }
 });
 
 function GetNewDaily(callback){
