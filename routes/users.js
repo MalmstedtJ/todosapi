@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var users = require('../models/users');
 var User = mongoose.model('users');
+var bcrypt = require('../tools/bcrypt');
 
 //Get all users, only admins
 router.get('/', function(req, res) {
@@ -43,10 +44,18 @@ router.post('/', function(req, res){
 		var admin = req.body.admin;
 		if (user != '' && pass != '' && (admin == true || admin == false))
 		{
-			var usr = new User({user: user, pass: pass, admin: admin});
-			usr.save();
-			console.log("Admin user: '"+req.decoded.user+"' just added user with id: '"+usr.id+"' and name: '"+usr.name+"'");
-			res.sendStatus(200);
+			bcrypt.cryptPassword(pass, function(err, hash){
+				if(hash){
+					var usr = new User({user: user, pass: hash, admin: admin});
+					usr.save();
+					console.log("Admin user: '"+req.decoded.user+"' just added user with id: '"+usr.id+"' and name: '"+usr.name+"'");
+					res.sendStatus(200);
+				}
+				else{
+					console.log("Error hashing password");
+					res.sendStatus(304);
+				}
+			});
 		}
 		else{
 			res.sendStatus(304);

@@ -10,7 +10,7 @@ var users = require('./routes/users');
 var todos = require('./routes/todos');
 var images = require('./routes/images');
 var mongoose = require('mongoose');
-var tokenauth = require('./models/tokenauth');
+var tokenauth = require('./tools/tokenauth');
 var config = require('./config/config');
 var fs = require('fs');
 

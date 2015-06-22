@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var wstools = require('../models/WS_UTILS');
+var wstools = require('../tools/WS_UTILS');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

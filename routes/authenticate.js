@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 var users = require('../models/users');
+var bcrypt = require('../tools/bcrypt');
 var User = mongoose.model('users');
 
 router.get('/', function(req,res){
@@ -21,17 +22,18 @@ router.post('/', function(req, res){
           res.json({ success: false, message: 'Authentication failed. User not found.' });
         }
         else if (user) {
-          // check if password matches
-          if (user.pass != req.body.pass) {
-            res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-          }
-          else if (user.admin != req.body.admin) {
+          if (user.admin != req.body.admin) {
             res.json({ success: false, message: 'Authentication failed. Wrong role.' });
-          } 
-          else {
+          }
+          else{
+          // check if password matches
+          bcrypt.comparePassword(req.body.pass, user.pass, function(err, match){
+            if (!match) {
+              res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+            }
+            else{
             // if user is found and password is right
             // create a token
-            console.log(config.secret);
             var token = jwt.sign(user, config.secret, {
               expiresInMinutes: 1440 // expires in 24 hours
             });
@@ -42,7 +44,9 @@ router.post('/', function(req, res){
               message: 'Enjoy your token!',
               token: token
             });
-          }   
+            }
+          });
+        }
         }
       });
 }
