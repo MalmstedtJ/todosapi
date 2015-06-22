@@ -41,7 +41,7 @@ router.post('/', function(req, res){
 		var user = req.body.user;
 		var pass = req.body.pass;
 		var admin = req.body.admin;
-		if (user != '' && pass != '' && (admin === 'true' || admin === 'false'))
+		if (user != '' && pass != '' && (admin === true || admin === false))
 		{
 			var usr = new User({user: user, pass: pass, admin: admin});
 			usr.save();
