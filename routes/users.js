@@ -13,10 +13,10 @@ router.get('/', function(req, res) {
 				res.send(users);
 				console.log("Admin user: '"+req.decoded.user+"' just fetched all users");
 			}
-			else{ res.sendStatus(403); }
+			else{res.sendStatus(403)}
 		});
 	}
-	else{ res.sendStatus(403); }
+	else{res.sendStatus(403)}
 });
 
 //Get user, only admins
@@ -30,10 +30,10 @@ router.get('/:id', function(req, res) {
 				res.send(user);
 				console.log("Admin user: '"+req.decoded.user+"' just fetched user with id: '"+id+"'");
 			}
-			else{ res.send(err); }
+			else{res.send(err)}
 		});
 	}
-	else{ res.sendStatus(403); }
+	else{res.sendStatus(403)}
 });
 
 //Add user, only admins
@@ -57,11 +57,9 @@ router.post('/', function(req, res){
 				}
 			});
 		}
-		else{
-			res.sendStatus(304);
-		}
+		else{res.sendStatus(304)}
 	}
-	else{ res.sendStatus(403); }
+	else{res.sendStatus(403)}
 });
 
 //Delete user, only admins
@@ -78,9 +76,7 @@ router.delete('/{user_id}', function(req, res){
 			else{res.send(err)}
 		});
 	}
-	else{
-		res.sendStatus(403);
-	}
+	else{res.sendStatus(403)}
 });
 
 module.exports = router;

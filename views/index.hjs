@@ -43,7 +43,7 @@
     			<td>Uprate the todo by id</td>
     		<tr>
             <tr>
-                <td>/authenticate/td>
+                <td>/authenticate</td>
                 <td>POST</td>
                 <td>Retrieve Auth token, requires user object</td>
             <tr>
