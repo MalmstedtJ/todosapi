@@ -18,7 +18,7 @@ router.post('/', function(req, res){
 		todos.Add(desc, function(success){
 			var code = success ? 200 : 417;
 			res.sendStatus(code);
-			NotifyAdd(req.app.get('wss'));
+			wstools.NotifyAdd(req.app.get('wss'));
 		});
 	}
 	else{res.sendStatus(417)}
@@ -32,7 +32,7 @@ router.delete('/:id', function(req, res){
 			if(success){
 				console.log("Admin user: '"+req.decoded.user+"' just deleted todo with id: '"+id+"'");
 				res.sendStatus(200)
-				NotifyDelete(req.app.get('wss'));
+				wstools.NotifyDelete(req.app.get('wss'));
 			}
 			else{res.send(err)}
 		});
@@ -47,7 +47,7 @@ router.put('/uprate/:id', function(req, res) {
 	todos.Rate(id, ip, 'up', function(success){
 		if(success){
 			res.sendStatus(200);
-			NotifyRate(req.app.get('wss'));
+			wstools.NotifyRate(req.app.get('wss'));
 		}
 		else{res.sendStatus(304)}
 	});
@@ -60,7 +60,7 @@ router.put('/downrate/:id', function(req, res) {
 	todos.Rate(id, ip, 'down', function(success){
 		if(success){
 			res.sendStatus(200);
-			NotifyRate(req.app.get('wss'));
+			wstools.NotifyRate(req.app.get('wss'));
 		}
 		else{res.sendStatus(304)}
 	});	
@@ -72,21 +72,6 @@ function GetIP(request){
     request.socket.remoteAddress ||
     request.connection.socket.remoteAddress;
     return ip;
-}
-
-function NotifyAdd(ws){
-	var msg = {'event': 'todo.add', message: 'A new todo has been added!'}
-	wstools.broadcast(ws, JSON.stringify(msg));
-}
-
-function  NotifyDelete(ws){
-	var msg = {'event': 'todo.delete', message: 'A todo has been deleted!'}
-	wstools.broadcast(ws, JSON.stringify(msg));
-}
-
-function NotifyRate(ws){
-	var msg = {'event': 'todo.rate', message: 'A todo has been rated!'}
-	wstools.broadcast(ws, JSON.stringify(msg));
 }
 
 module.exports = router;
